@@ -1,6 +1,7 @@
 const core = require('biot-core');
 const eventBus = require('ocore/event_bus');
 const fs = require('fs');
+const moment = require('moment');
 
 let addresses = {};
 try {
@@ -32,7 +33,7 @@ try {
 						type: 'render', page: 'index', form: [
 							{type: 'input', title: 'Name', id: 'name', required: true},
 							{type: 'input', title: 'Last Name', id: 'lname', required: true},
-							{type: 'input', title: 'Age', id: 'age', required: true},
+							{type: 'input', title: 'Date of birth (mm.dd.yyyy)', id: 'birth', required: true},
 							{type: 'address', required: true, title: 'Select wallet for address', id: 'address'},
 							{type: 'blank_line'},
 							{type: 'submit', title: 'Send'}
@@ -41,10 +42,24 @@ try {
 				}
 			} else if (object.type === 'response') {
 				if (object.page === 'index') {
+					let d = moment(object.response.birth, "DD.MM.YYYY");
+					if (d === "Invalid date") {
+						core.sendTechMessageToDevice(from_address, {
+							type: 'alert', message: 'Incorrect date of birth'
+						});
+						return;
+					}
+					if(d.unix() < moment().subtract(100, 'years').unix() || d.unix() >= moment().unix()){
+						core.sendTechMessageToDevice(from_address, {
+							type: 'alert', message: 'Incorrect date of birth'
+						});
+						return;
+					}
+					
 					let res = await core.postPrivateProfile(object.response.address, {
 						name: object.response.name,
 						lname: object.response.lname,
-						age: object.response.age
+						birth: object.response.birth
 					});
 					core.sendTechMessageToDevice(from_address, {
 						type: 'addProfile',
