@@ -42,7 +42,7 @@ try {
 				}
 			} else if (object.type === 'response') {
 				if (object.page === 'index') {
-					let d = moment(object.response.birth, "DD.MM.YYYY");
+					let d = moment(object.response.birth, "MM.DD.YYYY");
 					if (d === "Invalid date") {
 						core.sendTechMessageToDevice(from_address, {
 							type: 'alert', message: 'Incorrect date of birth'
