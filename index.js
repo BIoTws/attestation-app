@@ -14,6 +14,10 @@ try {
 (async () => {
 	await core.init('attestation-app-bsh');
 	
+	eventBus.on('paired', (from_address) => {
+		core.sendTechMessageToDevice(from_address, {type: 'imapp'});
+	});
+	
 	eventBus.on('object', async (from_address, object) => {
 		if (object.app === 'BIoT') {
 			if (object.type === 'hello') {
