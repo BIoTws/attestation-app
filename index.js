@@ -12,7 +12,7 @@ try {
 }
 
 (async () => {
-	await core.init('test');
+	await core.init('attestation-app-bsh');
 	
 	eventBus.on('object', async (from_address, object) => {
 		if (object.app === 'BIoT') {
@@ -36,14 +36,12 @@ try {
 					});
 				}
 			} else if (object.type === 'response') {
-				console.error('resp', object);
 				if (object.page === 'index') {
 					let res = await core.postPrivateProfile(object.response.address, {
 						name: object.response.name,
 						lname: object.response.lname,
 						age: object.response.age
 					});
-					console.error(res);
 					core.sendTechMessageToDevice(from_address, {
 						type: 'addProfile',
 						my_address: res.address,
