@@ -13,7 +13,7 @@ try {
 }
 
 (async () => {
-	await core.init('attestation-app-bsh');
+	await core.init('test');
 	
 	eventBus.on('paired', (from_address) => {
 		core.sendTechMessageToDevice(from_address, {type: 'imapp'});
@@ -33,7 +33,7 @@ try {
 						type: 'render', page: 'index', form: [
 							{type: 'input', title: 'Name', id: 'name', required: true},
 							{type: 'input', title: 'Last Name', id: 'lname', required: true},
-							{type: 'input', title: 'Date of birth (mm.dd.yyyy)', id: 'birth', required: true},
+							{type: 'input', title: 'Date of birth (dd.mm.yyyy)', id: 'birth', required: true},
 							{type: 'address', required: true, title: 'Select wallet for address', id: 'address'},
 							{type: 'blank_line'},
 							{type: 'submit', title: 'Send'}
@@ -42,7 +42,7 @@ try {
 				}
 			} else if (object.type === 'response') {
 				if (object.page === 'index') {
-					let d = moment(object.response.birth, "MM.DD.YYYY");
+					let d = moment(object.response.birth, "DD.MM.YYYY");
 					if (!d.isValid()) {
 						core.sendTechMessageToDevice(from_address, {
 							type: 'alert', message: 'Incorrect date of birth'
